@@ -6,7 +6,8 @@ const cache = {
   standings: {},  // key: competitionCode
   scorers: {},    // key: competitionCode
   teams: {},      // key: competitionCode
-  teamDetails: {} // key: teamId
+  teamDetails: {}, // key: teamId
+  matches: {}     // key: competitionCode
 };
 
 async function fetchFromAPI(endpoint) {
@@ -147,6 +148,53 @@ export async function fetchTeamById(teamId) {
   } catch (error) {
     console.error(`Gagal fetch detail tim ${teamId}:`, error);
     return null;
+  }
+}
+
+// Ambil jadwal pertandingan
+export async function fetchMatches(competitionCode) {
+  if (cache.matches[competitionCode]) {
+    console.log(`📦 Menggunakan cache matches untuk ${competitionCode}`);
+    return cache.matches[competitionCode];
+  }
+
+  try {
+    const data = await fetchFromAPI(`/competitions/${competitionCode}/matches`);
+    
+    const now = new Date();
+    
+    const formattedMatches = data.matches.map(m => {
+      const gmtDate = new Date(m.utcDate);
+      const dateStr = gmtDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      const timeStr = gmtDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+      
+      let score = 'VS';
+      if (m.status === 'FINISHED' || m.status === 'IN_PLAY' || m.status === 'PAUSED') {
+        score = `${m.score.fullTime.home ?? 0} - ${m.score.fullTime.away ?? 0}`;
+      }
+
+      return {
+        id: m.id,
+        home: m.homeTeam.shortName || m.homeTeam.name,
+        away: m.awayTeam.shortName || m.awayTeam.name,
+        score: score,
+        date: dateStr,
+        time: timeStr,
+        status: m.status,
+        rawDate: gmtDate
+      };
+    });
+
+    const upcoming = formattedMatches.filter(m => m.rawDate >= now).slice(0, 10);
+    const past = formattedMatches.filter(m => m.rawDate < now).reverse().slice(0, 10).reverse();
+    
+    const combined = [...past, ...upcoming];
+
+    cache.matches[competitionCode] = combined;
+    return combined;
+  } catch (error) {
+    console.error(`Gagal fetch matches untuk ${competitionCode}:`, error);
+    return [];
   }
 }
 
