@@ -12,7 +12,7 @@ const cache = {
 async function fetchFromAPI(endpoint) {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     headers: {
-      'X-Auth-Token': import.meta.env.VITE_FOOTBALL_TOKEN
+      'X-Auth-Token': '3653406ff5d64204bc1534d558b4439a'
     }
   });
 
