@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/football/:target*",
+      "destination": "/api/proxy"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

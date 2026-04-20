@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/football/, ''),
           headers: {
-            'X-Auth-Token': env.VITE_FOOTBALL_TOKEN
+            'X-Auth-Token': '3653406ff5d64204bc1534d558b4439a'
           }
         }
       }

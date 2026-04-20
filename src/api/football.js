@@ -1,5 +1,5 @@
 // src/api/football.js
-const BASE_URL = 'https://api.football-data.org/v4';
+const BASE_URL = '/api/football';
 
 // Cache sederhana (bertahan selama sesi aplikasi berjalan)
 const cache = {
@@ -10,11 +10,7 @@ const cache = {
 };
 
 async function fetchFromAPI(endpoint) {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      'X-Auth-Token': '3653406ff5d64204bc1534d558b4439a'
-    }
-  });
+  const res = await fetch(`${BASE_URL}${endpoint}`);
 
   if (!res.ok) {
     if (res.status === 429) throw new Error('Rate limit exceeded. Please wait a minute.');
