@@ -170,13 +170,15 @@ export async function fetchMatches(competitionCode) {
       
       let score = 'VS';
       if (m.status === 'FINISHED' || m.status === 'IN_PLAY' || m.status === 'PAUSED') {
-        score = `${m.score.fullTime.home ?? 0} - ${m.score.fullTime.away ?? 0}`;
+        const homeScore = m.score?.fullTime?.home ?? m.score?.regularTime?.home ?? 0;
+        const awayScore = m.score?.fullTime?.away ?? m.score?.regularTime?.away ?? 0;
+        score = `${homeScore} - ${awayScore}`;
       }
 
       return {
         id: m.id,
-        home: m.homeTeam.shortName || m.homeTeam.name,
-        away: m.awayTeam.shortName || m.awayTeam.name,
+        home: m.homeTeam?.shortName || m.homeTeam?.name || 'TBD',
+        away: m.awayTeam?.shortName || m.awayTeam?.name || 'TBD',
         score: score,
         date: dateStr,
         time: timeStr,
