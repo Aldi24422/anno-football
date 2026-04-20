@@ -94,7 +94,7 @@ export default function Matches() {
                      <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full mt-1 animate-pulse">LIVE</span>
                   ) : match.status !== 'FINISHED' ? (
                      <span className="text-[10px] text-gray-500 mt-1 uppercase">{match.status}</span>
-                  )}
+                  ) : null}
                 </div>
 
                 <div className="text-left sm:w-32 flex-1">
